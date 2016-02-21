@@ -13,12 +13,15 @@
 #include <stdio.h>
 #include <dirent.h>
 
+    
+
+using namespace std;
 
 int SourceFilesCount;
 int HeaderFilesCount;
 int FoldersCount;
 
-using namespace std;
+
 
 enum arg_type {
     source,
@@ -27,37 +30,68 @@ enum arg_type {
     none
 };
 
-
+void show_resut(string filename, int single_comments, int include_counts,int code_lines, int lines,map<int,string> includes) {
+    map<int,string>::iterator it2;
+    cout << "Filename:"<<filename<<"\n";
+    for(it2=includes.begin();it2!=includes.end(); it2++) {
+        cout << "\t|_" << it2->second << "\n";
+    }
+    
+    cout << "----------------------------"<<"\n";
+    cout << "| Includes:"<<include_counts<<"\n";
+    cout << "| Comments:"<<single_comments<<"\n";
+    cout << "| Code lines:"<<code_lines<<"\n";
+    cout << "| Sumary lines:"<<lines<<"\n";
+    cout << "----------------------------"<<"\n";
+    
+}
 
 void srcparser(string arg, arg_type mode) {
     
-    int count;
+    int include_counts;
+    int single_comments;
+    int lines;
+    int code_lines;
     string line;
-    
+    map<int,string> includes;
     
     
     switch (mode) {
         case source: case header:
+            
             try {
                 ifstream ifile(arg);
+                
                 if(ifile.is_open()) {
-                    cout << "Filename:\t" << arg << "\n";
-                    cout << "Included:\n";
+                    
+                    
                     while(getline(ifile,line)) {
+                        lines++;
+                        code_lines++;
                         if(line.substr(0,8)=="#include") {
-                            cout << "\t" << line.substr(9,line.length()-9) << "\n";
-                            count++;
+                            includes.insert(pair<int,string>(0,line.substr(9,line.length()-9)));
+                            cout << "Added:"<<line.substr(9,line.length()-9)<<"\n";
+                            include_counts++;
+                            
+                            
                         }
+                        
+                        if ((line.find("//")!=string::npos)) {
+                            single_comments++;
+                            code_lines--;
+                        }
+                       
                     }
-                    if(count>0) {
-                        cout << "Founds:" << count << "\n";
-                        count=0;
+                    
+                    ifile.close();
+                    
+                    if((include_counts>0)||(single_comments>0)||(lines>0)) {
+                        show_resut(arg,single_comments,include_counts,code_lines,lines, includes);
                     }
                     else {
-                        cout << "No include founds\n";
+                        cout << "No records in file\n";
                     }
-                    ifile.close();
-                    break;
+                    
                 }
             }
             catch (exception e) {
@@ -163,3 +197,4 @@ int main(int argc, const char * argv[]) {
     
     return 0;
 }
+
