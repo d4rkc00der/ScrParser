@@ -30,12 +30,14 @@ enum arg_type {
     none
 };
 
-void show_resut(string filename, int single_comments, int include_counts,int code_lines, int lines,map<int,string> includes) {
-    map<int,string>::iterator it2;
+void show_resut(string filename, int single_comments, int include_counts,int code_lines, int lines,map<int,string> includes2) {
+    
     cout << "Filename:"<<filename<<"\n";
-    for(it2=includes.begin();it2!=includes.end(); it2++) {
-        cout << "\t|_" << it2->second << "\n";
-    }
+    map<int,string>::iterator it2;
+    for(it2=includes2.begin();it2!=includes2.end();it2++)
+        cout << "\t|_" << it2->second << endl;
+        
+    
     
     cout << "----------------------------"<<"\n";
     cout << "| Includes:"<<include_counts<<"\n";
@@ -70,7 +72,7 @@ void srcparser(string arg, arg_type mode) {
                         code_lines++;
                         if(line.substr(0,8)=="#include") {
                             includes.insert(pair<int,string>(0,line.substr(9,line.length()-9)));
-                            cout << "Added:"<<line.substr(9,line.length()-9)<<"\n";
+                            
                             include_counts++;
                             
                             
@@ -148,6 +150,10 @@ void srcparser(string arg, arg_type mode) {
                 cout << e.what();
             }
         }
+        case none: {
+            exit(0);
+        }
+            
     }
     
     
