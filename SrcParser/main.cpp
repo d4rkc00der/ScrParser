@@ -26,6 +26,10 @@ void srcparser(string arg, arg_type mode) {
     
     string line;
     int count;
+    int SourceFilesCount;
+    int HeaderFilesCount;
+    int FoldersCount;
+    
     // Cheking if single source file in argument
     switch (mode) {
         case source: case header:
@@ -58,7 +62,14 @@ void srcparser(string arg, arg_type mode) {
             cout << "Folder specified\n";
             cout << arg << "\n";
             try {
-                
+                /* Change dir into folder path
+                /  foreach files in path call recurse srcparser(filename,mode) function
+                /  mode = source or header
+                /  switch type of file SourceFilesCount ot HeaderFilesCount
+                /  will be incremented
+                /  Foreach subfolder in path call recurse srcparser(path,mode) function
+                /  mode = folder
+                */
             }
             catch(exception e) {
                 cout << e.what();
