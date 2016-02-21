@@ -219,6 +219,7 @@
 		5C909E551C79AC3A0042B090 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/opt/boost/include/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -226,6 +227,7 @@
 		5C909E561C79AC3A0042B090 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/opt/boost/include/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

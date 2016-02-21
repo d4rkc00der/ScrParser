@@ -10,8 +10,13 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <stdio.h>
+#include <dirent.h>
 
 
+int SourceFilesCount;
+int HeaderFilesCount;
+int FoldersCount;
 
 using namespace std;
 
@@ -26,12 +31,9 @@ enum arg_type {
 
 void srcparser(string arg, arg_type mode) {
     
-    
-    string line;
     int count;
-    int SourceFilesCount;
-    int HeaderFilesCount;
-    int FoldersCount;
+    string line;
+    
     
     
     switch (mode) {
@@ -49,6 +51,7 @@ void srcparser(string arg, arg_type mode) {
                     }
                     if(count>0) {
                         cout << "Founds:" << count << "\n";
+                        count=0;
                     }
                     else {
                         cout << "No include founds\n";
@@ -62,8 +65,7 @@ void srcparser(string arg, arg_type mode) {
             }
      
         case folder: {
-            cout << "Folder specified\n";
-            cout << arg << "\n";
+            
             string pwd = arg;
             map<string,arg_type> files;
             try {
@@ -76,16 +78,36 @@ void srcparser(string arg, arg_type mode) {
                 /  mode = folder
                 */
                 
+                DIR *dfd;
+                struct dirent *dp;
+              
+                if ( !(dfd=opendir(arg.c_str()) ))
+                    exit(1);
+                
+                while( (dp=readdir(dfd)) != NULL ) {
+                    if(dp->d_type==DT_REG) {
+                            files.insert(pair<string,arg_type>(dp->d_name,header));
+                            cout << "Adding:" << dp->d_name << "\t" << "header\n";
+                    }
+                }
+                    
+                
+                closedir(dfd);
+
+                
                 map<string,arg_type>::iterator it;
                 for(it=files.begin();it!=files.end();it++) {
                     if(it->second==source) {
                         srcparser(it->first,it->second);
                         SourceFilesCount++;
+                        
                     }
                     if(it->second==header) {
                         HeaderFilesCount++;
-                        srcparser(it->first,it->second);
+                        //srcparser(it->first,it->second);
+                        
                     }
+                    cout << "Element:" <<it->first << "\n";
                 }
             }
             catch(exception e) {
@@ -119,24 +141,21 @@ void argparser(int argc, const char * argv[]) {
         mode=header;
     }
     
-    if(mode!=source && mode!=header)
+    if(mode!=source && mode!=header) {
         mode = folder;
-    
-    
-    
-    srcparser(path,mode);
+        srcparser(path,mode);
+    }
+    else
+        srcparser(path,mode);
 }
-
 
 int main(int argc, const char * argv[]) {
     // Test block
     
-
+    
     
   
-   
-    
-    //argparser(argc,argv);
+    argparser(argc,argv);
     
     
     
