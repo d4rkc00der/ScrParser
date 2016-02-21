@@ -11,6 +11,8 @@
 #include <string>
 #include <map>
 
+
+
 using namespace std;
 
 enum arg_type {
@@ -125,11 +127,20 @@ void argparser(int argc, const char * argv[]) {
     srcparser(path,mode);
 }
 
+
 int main(int argc, const char * argv[]) {
     // Test block
-    //std::cout << argv[0] << "\n";
     
-    argparser(argc,argv);
+
+    
+  
+   
+    
+    //argparser(argc,argv);
+    
+    
+    
+    
     
     return 0;
 }
