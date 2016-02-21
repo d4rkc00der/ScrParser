@@ -8,8 +8,33 @@
 
 #include <iostream>
 
+void argparser(int argc, const char * argv[]) {
+    
+    // Validation number of arguments
+    
+    if(argc<1) {
+        std::cout << "Incorrect number of arguments\n";
+        exit(0);
+    }
+    
+    
+}
+
+void srcparser(char * argv[]) {
+    // Cheking if single source file in argument
+    if(argv[0]=="source.cpp") {
+        std::cout << "Source file specified\n";
+    }
+    else {
+        std::cout << "Directory specified\n";
+    }
+    
+        
+}
+
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    argparser(argc,argv);
+    
     return 0;
 }
