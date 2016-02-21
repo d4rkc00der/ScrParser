@@ -12,86 +12,69 @@
 
 using namespace std;
 
+enum arg_type {
+    source,
+    header,
+    folder,
+    none
+};
 
 
-void srcparser(string arg) {
+
+void srcparser(string arg, arg_type mode) {
     
-    string filename;
+    
     string line;
     int count;
     // Cheking if single source file in argument
-    
-    
-    if(arg.substr(arg.length()-4,4)==".cpp") {
-        filename=arg;
-        
-        cout << "Source file specified\n";
-        try {
-            ifstream ifile(filename);
-            if(ifile.is_open()) {
-                cout << "Filename:\t" << filename << "\n";
-                cout << "Included:\n";
-                while(getline(ifile,line)) {
-                    if(line.substr(0,8)=="#include") {
-                        cout << "\t" << line.substr(9,line.length()-9) << "\n";
-                        count++;
+    switch (mode) {
+        case source: case header:
+            try {
+                ifstream ifile(arg);
+                if(ifile.is_open()) {
+                    cout << "Filename:\t" << arg << "\n";
+                    cout << "Included:\n";
+                    while(getline(ifile,line)) {
+                        if(line.substr(0,8)=="#include") {
+                            cout << "\t" << line.substr(9,line.length()-9) << "\n";
+                            count++;
+                        }
                     }
-                  }
-                if(count>0) {
-                    cout << "Founds:" << count << "\n";
+                    if(count>0) {
+                        cout << "Founds:" << count << "\n";
+                    }
+                    else {
+                        cout << "No include founds\n";
+                    }
+                    ifile.close();
+                    break;
                 }
-                else {
-                    cout << "No include founds\n";
-                }
-                ifile.close();
+            }
+            catch (exception e) {
+                cout << e.what() << "\n";
+            }
+     
+        case folder: {
+            cout << "Folder specified\n";
+            cout << arg << "\n";
+            try {
+                
+            }
+            catch(exception e) {
+                cout << e.what();
             }
         }
-        catch (exception e) {
-            cout << e.what() << "\n";
-        }
-        
-        exit(0);
-    }
-    if(arg.substr(arg.length()-2,2)==".h") {
-        filename=arg;
-        cout << "Header file specified\n";
-        try {
-            ifstream ifile(filename);
-            if(ifile.is_open()) {
-                cout << "Filename:\t" << filename << "\n";
-                cout << "Included:\n";
-                while(getline(ifile,line)) {
-                    if(line.substr(0,8)=="#include") {
-                        cout << "\t" << line.substr(9,line.length()-9) << "\n";
-                        count++;
-                    }
-                    
-                }
-                if(count>0) {
-                    cout << "Founds:" << count << "\n";
-                }
-                else {
-                    cout << "No include founds\n";
-                }
-                ifile.close();
-            }
-        }
-        catch (exception e) {
-            cout << e.what() << "\n";
-        }
-        
-        exit(0);
-        
     }
     
-        cout << "Directory specified\n";
-        cout << arg << "\n";
+    
+
     
         
 }
 
 void argparser(int argc, const char * argv[]) {
     
+    arg_type mode=none;
     // Validation number of arguments
     
     if(argc<1) {
@@ -99,7 +82,21 @@ void argparser(int argc, const char * argv[]) {
         exit(0);
     }
     
-    srcparser(argv[1]);
+    string path = argv[1];
+    if(path.substr(path.length()-4,4)==".cpp") {
+        mode=source;
+        
+    }
+    if(path.substr(path.length()-2,2)==".h") {
+        mode=header;
+    }
+    
+    if(mode!=source && mode!=header)
+        mode = folder;
+    
+    
+    
+    srcparser(path,mode);
 }
 
 int main(int argc, const char * argv[]) {
