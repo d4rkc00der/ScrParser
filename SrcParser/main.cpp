@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -61,6 +62,8 @@ void srcparser(string arg, arg_type mode) {
         case folder: {
             cout << "Folder specified\n";
             cout << arg << "\n";
+            string pwd = arg;
+            map<string,arg_type> files;
             try {
                 /* Change dir into folder path
                 /  foreach files in path call recurse srcparser(filename,mode) function
@@ -70,6 +73,18 @@ void srcparser(string arg, arg_type mode) {
                 /  Foreach subfolder in path call recurse srcparser(path,mode) function
                 /  mode = folder
                 */
+                
+                map<string,arg_type>::iterator it;
+                for(it=files.begin();it!=files.end();it++) {
+                    if(it->second==source) {
+                        srcparser(it->first,it->second);
+                        SourceFilesCount++;
+                    }
+                    if(it->second==header) {
+                        HeaderFilesCount++;
+                        srcparser(it->first,it->second);
+                    }
+                }
             }
             catch(exception e) {
                 cout << e.what();
